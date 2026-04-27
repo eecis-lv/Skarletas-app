@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Skarleta's Daily Stars ⭐</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --pink:#FF6B9D;--purple:#B56BFF;--blue:#6BB5FF;--yellow:#FFD700;
+      --orange:#FF9F43;--green:#6BFF9D;--red:#FF6B6B;--teal:#6BFFE0;
+      --text-dark:#2D2D4E;--text-mid:#5A5A7A;--text-light:#A0A0C0;
+      --card-bg:rgba(255,255,255,0.92);--card-shadow:0 4px 20px rgba(100,80,200,0.12);
+      --radius:20px;--nav-h:68px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;overflow:hidden}
+    body{font-family:'Nunito','Comic Sans MS','Chalkboard SE',Arial,sans-serif;animation:bg-cycle 14s ease-in-out infinite}
+    @keyframes bg-cycle{0%{background-color:#FFE0F5}14%{background-color:#FFE8D8}28%{background-color:#FFFBD0}42%{background-color:#D8FFE8}57%{background-color:#D8EEFF}71%{background-color:#EAD8FF}85%{background-color:#FFD8F0}100%{background-color:#FFE0F5}}
+    #app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;position:relative}
+    #header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 8px;background:rgba(255,255,255,0.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1.5px solid rgba(255,255,255,0.6);flex-shrink:0;z-index:10}
+    .header-left{display:flex;align-items:center;gap:10px}
+    .logo{width:50px;height:50px;flex-shrink:0}
+    .header-title{display:flex;flex-direction:column}
+    .app-name{font-size:17px;font-weight:900;line-height:1.1;background:linear-gradient(90deg,#FF6B9D 0%,#B56BFF 50%,#6BB5FF 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .app-date{font-size:11px;color:var(--text-mid);font-weight:700;margin-top:1px}
+    #star-counter{display:flex;align-items:center;gap:5px;background:rgba(255,215,0,0.18);border:2px solid rgba(255,215,0,0.45);border-radius:22px;padding:6px 14px}
+    #star-counter.bump{animation:bump 0.35s cubic-bezier(0.34,1.56,0.64,1)}
+    @keyframes bump{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+    .star-icon{font-size:20px}.star-count{font-size:20px;font-weight:900;color:#C08000}
+    #content{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px;-webkit-overflow-scrolling:touch}
+    #content::-webkit-scrollbar{width:4px}
+    #content::-webkit-scrollbar-thumb{background:rgba(181,107,255,0.28);border-radius:2px}
+    .view{display:none}.view.active{display:block}
+    #all-done-banner{display:none;text-align:center;background:linear-gradient(135deg,rgba(107,255,157,0.28),rgba(107,255,224,0.28));border:2px solid rgba(107,255,157,0.55);border-radius:var(--radius);padding:18px;margin-bottom:14px;animation:pop-in 0.4s cubic-bezier(0.34,1.56,0.64,1)}
+    #all-done-banner.visible{display:block}
+    @keyframes pop-in{from{opacity:0;transform:scale(0.75)}to{opacity:1;transform:scale(1)}}
+    .banner-emoji{font-size:44px}.banner-title{font-size:22px;font-weight:900;color:#00A040;margin-top:6px}.banner-sub{font-size:14px;color:var(--text-mid);font-weight:700;margin-top:4px}
+    .task-list{display:flex;flex-direction:column;gap:10px}
+    .task-card{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--card-shadow);display:flex;align-items:center;padding:13px 14px;gap:14px;cursor:pointer;border:2.5px solid transparent;transition:transform 0.12s,border-color 0.2s,background 0.2s;user-select:none;-webkit-user-select:none}
+    .task-card:active{transform:scale(0.97)}
+    .task-card.completed{border-color:rgba(0,180,80,0.35);background:rgba(0,200,90,0.06)}
+    .task-emoji{width:50px;height:50px;border-radius:14px;background:rgba(181,107,255,0.12);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;transition:background 0.2s}
+    .task-card.completed .task-emoji{background:rgba(0,200,90,0.14)}
+    .task-name{flex:1;font-size:17px;font-weight:800;color:var(--text-dark);transition:color 0.2s}
+    .task-card.completed .task-name{text-decoration:line-through;color:var(--text-light)}
+    .task-check{width:38px;height:38px;border-radius:50%;border:3px solid #D0D0E8;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;background:white;transition:all 0.2s;color:white}
+    .task-card.completed .task-check{background:linear-gradient(135deg,#6BFF9D,#00C853);border-color:#00C853;animation:check-pop 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+    @keyframes check-pop{0%,100%{transform:scale(1)}50%{transform:scale(1.45)}}
+    .empty-state{text-align:center;padding:52px 24px;color:var(--text-light)}
+    .empty-icon{font-size:64px}.empty-msg{font-size:17px;font-weight:700;margin-top:14px}.empty-hint{font-size:13px;margin-top:6px}
+    .history-heading{font-size:20px;font-weight:900;color:var(--text-dark);margin-bottom:4px}
+    .week-total-line{font-size:13px;font-weight:700;color:var(--text-mid);margin-bottom:14px}
+    .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:18px}
+    .day-card{background:var(--card-bg);border-radius:14px;padding:8px 2px;text-align:center;cursor:pointer;border:2px solid transparent;box-shadow:0 2px 8px rgba(100,80,200,0.07);transition:transform 0.12s}
+    .day-card:active{transform:scale(0.93)}
+    .day-card.is-today{border-color:var(--purple)}.day-card.is-selected{border-color:var(--pink);background:rgba(255,107,157,0.07)}
+    .day-card.no-stars .day-star{filter:grayscale(1);opacity:0.4}.day-card.no-stars .day-s-count{color:var(--text-light)}
+    .day-label{font-size:9px;font-weight:800;color:var(--text-light);text-transform:uppercase;letter-spacing:0.3px}
+    .day-num{font-size:15px;font-weight:900;color:var(--text-dark);margin:2px 0 5px}
+    .day-star{font-size:14px;line-height:1}.day-s-count{font-size:11px;font-weight:900;color:#C08000;margin-top:1px}
+    .day-detail-box{background:var(--card-bg);border-radius:var(--radius);padding:16px;box-shadow:var(--card-shadow)}
+    .day-detail-box h3{font-size:15px;font-weight:900;color:var(--text-dark);margin-bottom:12px}
+    .dd-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-size:15px;font-weight:700}
+    .dd-row:last-child{border-bottom:none}
+    .dd-name.done{color:var(--text-dark)}.dd-name.undone{color:var(--text-light);text-decoration:line-through}.dd-tick{margin-left:auto}
+    .tasks-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .tasks-hdr h2{font-size:20px;font-weight:900;color:var(--text-dark)}
+    .tm-list{display:flex;flex-direction:column;gap:8px}
+    .tm-item{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--card-shadow);display:flex;align-items:center;padding:11px 12px;gap:12px}
+    .tm-emoji{width:46px;height:46px;border-radius:13px;background:rgba(181,107,255,0.12);display:flex;align-items:center;justify-content:center;font-size:25px;flex-shrink:0}
+    .tm-name{flex:1;font-size:16px;font-weight:800;color:var(--text-dark)}
+    .tm-actions{display:flex;gap:5px}
+    .ic-btn{width:34px;height:34px;border-radius:10px;border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:transform 0.12s;font-family:inherit}
+    .ic-btn:active{transform:scale(0.88)}.ic-btn:disabled{opacity:0.3;cursor:not-allowed}
+    .btn-up,.btn-down{background:rgba(181,107,255,0.14);color:#7020B0}
+    .btn-edit{background:rgba(107,181,255,0.18);color:#0060B0}
+    .btn-del{background:rgba(255,107,107,0.18);color:#B00020}
+    .tasks-empty{text-align:center;padding:48px 24px;color:var(--text-light);font-size:15px;font-weight:700}
+    #nav-tabs{display:flex;background:rgba(255,255,255,0.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1.5px solid rgba(255,255,255,0.65);height:var(--nav-h);flex-shrink:0;z-index:10}
+    .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:transparent;cursor:pointer;color:var(--text-light);font-family:inherit;padding:8px 4px;transition:color 0.18s}
+    .tab.active{color:var(--purple)}.tab-icon{font-size:26px;line-height:1}.tab-label{font-size:11px;font-weight:800}
+    .tab.active .tab-icon{filter:drop-shadow(0 0 5px rgba(181,107,255,0.55))}
+    #fab{position:absolute;bottom:calc(var(--nav-h) + 14px);right:14px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple));border:none;color:white;font-size:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 22px rgba(181,107,255,0.42);z-index:20;transition:transform 0.15s;line-height:1;font-family:inherit}
+    #fab:active{transform:scale(0.9)}
+    .modal-wrap{position:fixed;inset:0;background:rgba(40,20,80,0.46);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.22s}
+    .modal-wrap.open{opacity:1;pointer-events:all}
+    .modal-sheet{background:white;border-radius:28px 28px 0 0;padding:22px 18px 40px;width:100%;max-width:480px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.34,1.3,0.64,1)}
+    .modal-wrap.open .modal-sheet{transform:translateY(0)}
+    .modal-handle{width:38px;height:4px;background:#DDD;border-radius:2px;margin:0 auto 18px}
+    .modal-title{font-size:22px;font-weight:900;color:var(--text-dark);text-align:center;margin-bottom:18px}
+    .field-lbl{display:block;font-size:12px;font-weight:800;color:var(--text-mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+    .form-group{margin-bottom:16px}
+    .emoji-selector{display:flex;align-items:center;gap:12px}
+    .emoji-preview{width:58px;height:58px;border-radius:17px;background:rgba(181,107,255,0.12);border:2.5px solid rgba(181,107,255,0.3);display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;flex-shrink:0;transition:border-color 0.15s}
+    .emoji-preview:active{border-color:var(--purple)}.emoji-hint{font-size:13px;color:var(--text-mid);font-weight:700}
+    .name-input{width:100%;padding:14px 16px;border-radius:16px;border:2.5px solid #EAE0F8;font-family:inherit;font-size:17px;font-weight:700;color:var(--text-dark);background:#FAFAFE;outline:none;transition:border-color 0.18s}
+    .name-input:focus{border-color:var(--purple)}.name-input.error{border-color:var(--red)}
+    .modal-actions{display:flex;gap:10px;margin-top:18px}
+    .btn-cancel{flex:1;padding:14px;border-radius:16px;border:2.5px solid #EAE0F8;background:white;font-family:inherit;font-size:16px;font-weight:800;color:var(--text-mid);cursor:pointer}
+    .btn-save{flex:2;padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--pink),var(--purple));font-family:inherit;font-size:16px;font-weight:800;color:white;cursor:pointer;box-shadow:0 4px 16px rgba(181,107,255,0.38);transition:transform 0.12s}
+    .btn-save:active{transform:scale(0.96)}
+    #emoji-picker-modal{z-index:110}
+    #emoji-picker-modal .modal-sheet{max-height:65vh;overflow-y:auto}
+    .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+    .eg-btn{aspect-ratio:1;border:none;background:transparent;border-radius:10px;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.12s}
+    .eg-btn:hover,.eg-btn:active{background:rgba(181,107,255,0.15)}
+    #toast{position:fixed;top:78px;left:50%;transform:translateX(-50%) translateY(-18px);background:white;border-radius:20px;padding:12px 22px;box-shadow:0 8px 30px rgba(80,60,180,0.18);font-size:16px;font-weight:800;color:var(--text-dark);z-index:300;opacity:0;pointer-events:none;transition:opacity 0.28s,transform 0.28s;white-space:nowrap;max-width:calc(100vw - 28px)}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .cf{position:fixed;top:-16px;border-radius:3px;pointer-events:none;z-index:9998;animation:cf-fall linear forwards}
+    @keyframes cf-fall{0%{transform:translateY(0) rotate(0deg);opacity:1}80%{opacity:1}100%{transform:translateY(105vh) rotate(700deg);opacity:0}}
+  </style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <div class="header-left">
+      <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <defs><clipPath id="rc"><circle cx="50" cy="50" r="44"/></clipPath></defs>
+        <circle cx="50" cy="50" r="44" fill="white"/>
+        <g clip-path="url(#rc)">
+          <path d="M 10 70 A 40 40 0 0 1 90 70" fill="none" stroke="#FF4757" stroke-width="7" stroke-linecap="round"/>
+          <path d="M 17 70 A 33 33 0 0 1 83 70" fill="none" stroke="#FF9F43" stroke-width="7" stroke-linecap="round"/>
+          <path d="M 24 70 A 26 26 0 0 1 76 70" fill="none" stroke="#FFD700" stroke-width="7" stroke-linecap="round"/>
+          <path d="M 31 70 A 19 19 0 0 1 69 70" fill="none" stroke="#2ED573" stroke-width="7" stroke-linecap="round"/>
+          <path d="M 38 70 A 12 12 0 0 1 62 70" fill="none" stroke="#1E90FF" stroke-width="7" stroke-linecap="round"/>
+          <path d="M 45 70 A  5  5 0 0 1 55 70" fill="none" stroke="#9B59B6" stroke-width="7" stroke-linecap="round"/>
+        </g>
+        <circle cx="50" cy="50" r="44" fill="none" stroke="#D0C0F0" stroke-width="3"/>
+      </svg>
+      <div class="header-title">
+        <span class="app-name">Skarleta's Stars</span>
+        <span class="app-date" id="header-date"></span>
+      </div>
+    </div>
+    <div id="star-counter">
+      <span class="star-icon">⭐</span>
+      <span class="star-count" id="star-num">0</span>
+    </div>
+  </div>
+
+  <div id="content">
+    <div id="view-home" class="view active">
+      <div id="all-done-banner">
+        <div class="banner-emoji">🌟</div>
+        <div class="banner-title">All done! Amazing work!</div>
+        <div class="banner-sub">You're an absolute superstar today!</div>
+      </div>
+      <div class="task-list" id="task-list"></div>
+    </div>
+    <div id="view-history" class="view">
+      <p class="history-heading">This Week ⭐</p>
+      <p class="week-total-line" id="week-total"></p>
+      <div class="week-grid" id="week-grid"></div>
+      <div id="day-detail"></div>
+    </div>
+    <div id="view-tasks" class="view">
+      <div class="tasks-hdr"><h2>My Tasks 📋</h2></div>
+      <div class="tm-list" id="tm-list"></div>
+      <div class="tasks-empty" id="tasks-empty" style="display:none">No tasks yet!<br>Tap <strong>+</strong> to add your first one 🌟</div>
+    </div>
+  </div>
+
+  <div id="nav-tabs">
+    <button class="tab active" data-view="home" onclick="goTo('home')"><span class="tab-icon">🏠</span><span class="tab-label">Today</span></button>
+    <button class="tab" data-view="history" onclick="goTo('history')"><span class="tab-icon">📅</span><span class="tab-label">History</span></button>
+    <button class="tab" data-view="tasks" onclick="goTo('tasks')"><span class="tab-icon">📋</span><span class="tab-label">Tasks</span></button>
+  </div>
+  <button id="fab" onclick="openAddModal()" title="Add task">+</button>
+</div>
+
+<div class="modal-wrap" id="task-modal" onclick="backdropClose(event,'task-modal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title-text">Add Task ✨</div>
+    <div class="form-group">
+      <label class="field-lbl">Emoji</label>
+      <div class="emoji-selector">
+        <div class="emoji-preview" id="emoji-preview" onclick="openEmojiPicker()">⭐</div>
+        <span class="emoji-hint">Tap to choose an emoji!</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="field-lbl">Task Name</label>
+      <input id="task-name-input" class="name-input" type="text" placeholder="e.g. Read for 15 minutes" maxlength="40" autocapitalize="words" autocomplete="off" onkeydown="if(event.key==='Enter')saveTask()">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('task-modal')">Cancel</button>
+      <button class="btn-save" onclick="saveTask()">Save ✨</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-wrap" id="emoji-picker-modal" onclick="backdropClose(event,'emoji-picker-modal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Pick an Emoji 🎨</div>
+    <div class="emoji-grid" id="emoji-grid"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+const ENCOURAGEMENTS=['You\'re a superstar! ⭐','Brilliant job! 🌟','So proud of you! 💖','Keep it up! 🚀','You rock! 🎉','Amazing work! 🌈','Fantastic! 🦋','Way to go! 🎊','You\'re awesome! 💫','Outstanding! 🏆','Incredible! 🦄','You nailed it! 🎯','Wow, look at you! ✨','Super duper! 🍭','Shining bright! 🌟'];
+const EMOJIS=['📚','📖','✏️','🎒','🔬','🎨','🎵','📝','🧹','🛁','🍽️','🛏️','🧼','🌱','🐾','🏠','🏃','🚴','🏊','⚽','🎮','🎯','💪','🎭','😊','💖','⭐','🌟','🌈','🦋','🌸','🎀','🥗','🍎','🥦','🍓','🥕','🌮','🍰','🧃','🐶','🐱','🦄','🐝','🌻','🍀','🌙','☀️','🧩','🎪','🎈','🎁','🧸','🪀','🎠','🪁'];
+const KEYS={TASKS:'skarleta_tasks',TODAY:'skarleta_today',HISTORY:'skarleta_history'};
+const DEFAULT_TASKS=[{name:'Do my homework',emoji:'📚'},{name:'Tidy up my room',emoji:'🧹'},{name:'Read a book',emoji:'📖'}];
+
+function load(k,fb){try{return JSON.parse(localStorage.getItem(k))??fb}catch{return fb}}
+function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
+
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function friendlyDate(d){const D=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],M=['January','February','March','April','May','June','July','August','September','October','November','December'];return D[d.getDay()]+', '+d.getDate()+' '+M[d.getMonth()]}
+function shortDay(d){return['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}
+function shortMonth(d){return['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}
+function weekDays(){const t=new Date(),dw=t.getDay(),mon=new Date(t);mon.setDate(t.getDate()-((dw+6)%7));return Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d})}
+function dStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36)}
+
+let _actx=null;
+function actx(){if(!_actx)_actx=new(window.AudioContext||window.webkitAudioContext)();return _actx}
+function tone(f,t,dur,vol=0.25){const c=actx(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+0.03);g.gain.exponentialRampToValueAtTime(0.001,t+dur);o.start(t);o.stop(t+dur)}
+function playChime(){try{const t=actx().currentTime;[523.25,659.25,783.99].forEach((f,i)=>tone(f,t+i*0.09,0.55))}catch(e){}}
+function playFanfare(){try{const t=actx().currentTime;[523.25,659.25,783.99,1046.50,1318.51].forEach((f,i)=>tone(f,t+i*0.11,0.75,0.3))}catch(e){}}
+
+function launchConfetti(){const C=['#FF6B9D','#B56BFF','#6BB5FF','#FFD700','#FF6B6B','#6BFF9D','#FF9F43','#2ED573'];for(let i=0;i<110;i++){const el=document.createElement('div');el.className='cf';const s=Math.random()*10+7,circ=Math.random()>.5;Object.assign(el.style,{left:Math.random()*100+'vw',width:s+'px',height:(circ?s:s*.45)+'px',borderRadius:circ?'50%':'2px',background:C[Math.floor(Math.random()*C.length)],animationDuration:Math.random()*2+2+'s',animationDelay:Math.random()*.7+'s'});document.body.appendChild(el);setTimeout(()=>el.remove(),3800)}}
+
+let _tt=null;
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2600)}
+
+function archiveAndReset(prev){const td=load(KEYS.TODAY,{date:'',completedIds:[]});if(prev&&prev!==todayStr()){const h=load(KEYS.HISTORY,[]),idx=h.findIndex(r=>r.date===prev),rec={date:prev,completedIds:td.completedIds,stars:td.completedIds.length};if(idx>=0)h[idx]=rec;else h.push(rec);save(KEYS.HISTORY,h)}const fr={date:todayStr(),completedIds:[]};save(KEYS.TODAY,fr);return fr}
+function checkReset(){const s=load(KEYS.TODAY,{date:'',completedIds:[]});if(s.date!==todayStr())return archiveAndReset(s.date);return s}
+function scheduleReset(){const now=new Date(),fire=new Date(now);fire.setHours(23,30,0,0);if(now>=fire)fire.setDate(fire.getDate()+1);setTimeout(()=>{const p=load(KEYS.TODAY,{date:''}).date;app.today=archiveAndReset(p);app.history=load(KEYS.HISTORY,[]);render();scheduleReset()},fire-now)}
+
+const app={tasks:[],today:{date:'',completedIds:[]},history:[],view:'home',editId:null,selDay:null,pendingEmoji:'⭐'};
+
+function initApp(){app.today=checkReset();app.tasks=load(KEYS.TASKS,[]);app.history=load(KEYS.HISTORY,[]);if(app.tasks.length===0){app.tasks=DEFAULT_TASKS.map((t,i)=>({id:uid(),name:t.name,emoji:t.emoji,order:i,createdAt:new Date().toISOString()}));save(KEYS.TASKS,app.tasks)}}
+function sortedTasks(){return[...app.tasks].sort((a,b)=>a.order-b.order)}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function goTo(v){app.view=v;document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id==='view-'+v));document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.view===v));document.getElementById('fab').style.display=v==='history'?'none':'flex';render()}
+function render(){if(app.view==='home')renderHome();if(app.view==='history')renderHistory();if(app.view==='tasks')renderTasks()}
+
+function renderHome(){const tasks=sortedTasks(),done=app.today.completedIds,stars=done.length;document.getElementById('star-num').textContent=stars;const allDone=tasks.length>0&&tasks.every(t=>done.includes(t.id));document.getElementById('all-done-banner').classList.toggle('visible',allDone);const list=document.getElementById('task-list');if(tasks.length===0){list.innerHTML='<div class="empty-state"><div class="empty-icon">🌟</div><p class="empty-msg">No tasks yet!</p><p class="empty-hint">Tap + to add your first task</p></div>';return}list.innerHTML=tasks.map(t=>{const d=done.includes(t.id);return'<div class="task-card'+(d?' completed':'')+'" onclick="toggleTask(\''+t.id+'\')"><div class="task-emoji">'+t.emoji+'</div><span class="task-name">'+esc(t.name)+'</span><div class="task-check">'+(d?'✓':'')+'</div></div>'}).join('')}
+
+function toggleTask(id){const idx=app.today.completedIds.indexOf(id),was=idx>=0;if(was)app.today.completedIds.splice(idx,1);else{app.today.completedIds.push(id);playChime();showToast(ENCOURAGEMENTS[Math.floor(Math.random()*ENCOURAGEMENTS.length)]);const c=document.getElementById('star-counter');c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump')}save(KEYS.TODAY,app.today);renderHome();const tasks=sortedTasks();if(!was&&tasks.length>0&&tasks.every(t=>app.today.completedIds.includes(t.id)))setTimeout(()=>{launchConfetti();playFanfare()},250)}
+
+function renderHistory(){const days=weekDays(),today=todayStr();let tot=0;const g=days.map(d=>{const ds=dStr(d);let s=ds===today?app.today.completedIds.length:(app.history.find(r=>r.date===ds)||{stars:0}).stars;tot+=s;const iT=ds===today,iS=ds===app.selDay,nS=s===0;return'<div class="day-card'+(iT?' is-today':'')+(iS?' is-selected':'')+(nS?' no-stars':'')+'" onclick="selDay(\''+ds+'\')"><div class="day-label">'+shortDay(d)+'</div><div class="day-num">'+d.getDate()+'</div><div class="day-star">⭐</div><div class="day-s-count">'+s+'</div></div>'}).join('');document.getElementById('week-grid').innerHTML=g;document.getElementById('week-total').textContent='Total: '+tot+' star'+(tot!==1?'s':'')+' this week';renderDayDetail(app.selDay)}
+function selDay(ds){app.selDay=app.selDay===ds?null:ds;renderHistory()}
+function renderDayDetail(ds){const c=document.getElementById('day-detail');if(!ds){c.innerHTML='';return}const tasks=sortedTasks(),today=todayStr(),cids=ds===today?app.today.completedIds:((app.history.find(r=>r.date===ds)||{completedIds:[]}).completedIds),d=new Date(ds+'T12:00:00'),DN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],lbl=DN[d.getDay()]+', '+d.getDate()+' '+shortMonth(d);if(!tasks.length){c.innerHTML='<div class="day-detail-box"><h3>'+lbl+'</h3><p style="color:var(--text-light);font-size:14px;font-weight:700">No tasks set up yet.</p></div>';return}c.innerHTML='<div class="day-detail-box"><h3>'+lbl+'</h3>'+tasks.map(t=>{const dn=cids.includes(t.id);return'<div class="dd-row"><span>'+t.emoji+'</span><span class="dd-name '+(dn?'done':'undone')+'">'+esc(t.name)+'</span><span class="dd-tick">'+(dn?'✓':'–')+'</span></div>'}).join('')+'</div>'}
+
+function renderTasks(){const tasks=sortedTasks(),list=document.getElementById('tm-list'),empty=document.getElementById('tasks-empty');if(!tasks.length){list.innerHTML='';empty.style.display='block';return}empty.style.display='none';list.innerHTML=tasks.map((t,i)=>'<div class="tm-item"><div class="tm-emoji">'+t.emoji+'</div><span class="tm-name">'+esc(t.name)+'</span><div class="tm-actions"><button class="ic-btn btn-up" onclick="moveTask(\''+t.id+'\',-1)" '+(i===0?'disabled':'')+'>↑</button><button class="ic-btn btn-down" onclick="moveTask(\''+t.id+'\',1)" '+(i===tasks.length-1?'disabled':'')+'>↓</button><button class="ic-btn btn-edit" onclick="openEditModal(\''+t.id+'\')">✏️</button><button class="ic-btn btn-del" onclick="deleteTask(\''+t.id+'\')">🗑️</button></div></div>').join('')}
+
+function moveTask(id,dir){const tasks=sortedTasks(),idx=tasks.findIndex(t=>t.id===id),ni=idx+dir;if(ni<0||ni>=tasks.length)return;const tmp=tasks[idx].order;tasks[idx].order=tasks[ni].order;tasks[ni].order=tmp;app.tasks=tasks;save(KEYS.TASKS,app.tasks);renderTasks()}
+function deleteTask(id){if(!confirm('Remove this task?'))return;app.tasks=app.tasks.filter(t=>t.id!==id);app.today.completedIds=app.today.completedIds.filter(c=>c!==id);save(KEYS.TASKS,app.tasks);save(KEYS.TODAY,app.today);renderTasks();renderHome()}
+
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function backdropClose(e,id){if(e.target===document.getElementById(id))closeModal(id)}
+
+function openAddModal(){app.editId=null;app.pendingEmoji='⭐';document.getElementById('modal-title-text').textContent='Add Task ✨';document.getElementById('task-name-input').value='';document.getElementById('emoji-preview').textContent='⭐';document.getElementById('task-name-input').classList.remove('error');openModal('task-modal');setTimeout(()=>document.getElementById('task-name-input').focus(),340)}
+function openEditModal(id){const t=app.tasks.find(x=>x.id===id);if(!t)return;app.editId=id;app.pendingEmoji=t.emoji;document.getElementById('modal-title-text').textContent='Edit Task ✏️';document.getElementById('task-name-input').value=t.name;document.getElementById('emoji-preview').textContent=t.emoji;document.getElementById('task-name-input').classList.remove('error');openModal('task-modal');setTimeout(()=>document.getElementById('task-name-input').focus(),340)}
+function saveTask(){const inp=document.getElementById('task-name-input'),name=inp.value.trim();if(!name){inp.classList.add('error');inp.focus();setTimeout(()=>inp.classList.remove('error'),900);return}if(app.editId){const t=app.tasks.find(x=>x.id===app.editId);if(t){t.name=name;t.emoji=app.pendingEmoji}}else{const mo=app.tasks.reduce((m,t)=>Math.max(m,t.order),-1);app.tasks.push({id:uid(),name,emoji:app.pendingEmoji,order:mo+1,createdAt:new Date().toISOString()})}save(KEYS.TASKS,app.tasks);closeModal('task-modal');renderHome();renderTasks()}
+
+function openEmojiPicker(){document.getElementById('emoji-grid').innerHTML=EMOJIS.map(e=>'<button class="eg-btn" onclick="pickEmoji(this)" data-e="'+e+'">'+e+'</button>').join('');openModal('emoji-picker-modal')}
+function pickEmoji(btn){app.pendingEmoji=btn.dataset.e;document.getElementById('emoji-preview').textContent=btn.dataset.e;closeModal('emoji-picker-modal')}
+
+function boot(){initApp();document.getElementById('header-date').textContent=friendlyDate(new Date());scheduleReset();renderHome()}
+boot();
+</script>
+</body>
+</html>
